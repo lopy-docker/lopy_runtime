@@ -1,0 +1,9 @@
+version: '2.1'
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "test_swoole"
+    container_name: "test_swoole1"
+    working_dir: /app
