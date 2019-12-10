@@ -11,7 +11,7 @@ WORKDIR /app
 # RUN apk add unrar
 
 # mysql 
-# RUN docker-php-ext-install -j$(nproc) pdo_mysql
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
 ADD extension /tmp/extension
 
@@ -24,24 +24,20 @@ RUN apk add --update --no-cache --virtual .build-deps \
     make \
     autoconf \
     openssl-dev \
-    # && pecl install inotify && docker-php-ext-enable inotify \
-    # && pecl install redis && docker-php-ext-enable redis \
-    # && php /tmp/extension/ExtInstaller.php -n apcu \
+    && pecl install inotify && docker-php-ext-enable inotify \
+    && pecl install redis && docker-php-ext-enable redis \
+    && php /tmp/extension/ExtInstaller.php -n apcu \
     && php /tmp/extension/ExtInstaller.php -n swoole \
     && rm -rf /tmp/extension \
     && apk del .build-deps
 
-# RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
+RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
 
 
 RUN chown -R www-data:www-data /app
 
 
 # composer
-# RUN cd /usr/local/bin \
-#     && curl -sS https://getcomposer.org/installer | php \
-#     && mv composer.phar composer \ 
-#     && composer -V
 
 
 # Commands to update the image
