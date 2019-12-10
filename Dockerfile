@@ -8,7 +8,7 @@ MAINTAINER zengyu 284141050@qq.com
 #
 WORKDIR /app
 
-# RUN apk add unrar
+RUN apk add unrar
 
 # mysql 
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
