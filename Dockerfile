@@ -10,8 +10,6 @@ WORKDIR /app
 
 RUN apk add unrar
 
-# mysql 
-#RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
 ADD extension /tmp/extension
 
@@ -30,11 +28,9 @@ RUN apk add --update --no-cache --virtual .build-deps \
     && rm -rf /tmp/extension \
     && apk del .build-deps
 
-##RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
 
-
-RUN apk add --no-cache freetype-dev libpng-dev libjpeg-turbo-dev --virtual .gd-deps \
-    && apk add --no-cache  freetype libpng libjpeg-turbo libzip-dev \
+RUN apk add --no-cache freetype-dev libpng-dev libjpeg-turbo-dev libzip-dev --virtual .gd-deps \
+    && apk add --no-cache  freetype libpng libjpeg-turbo libzip \
     && docker-php-ext-configure gd \
     --with-gd \
     --with-freetype-dir=/usr/include/ \
