@@ -36,7 +36,8 @@ class SwooleExtInstaller extends ExtInstaller{
      * Nullable
      */
     protected $extConfigureParams = [
-        '--enable-openssl'
+        '--enable-openssl',
+        '--enable-mysqlnd'
     ];
 
     /**
