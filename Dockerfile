@@ -30,17 +30,18 @@ RUN apk add --update --no-cache --virtual .build-deps \
     && rm -rf /tmp/extension \
     && apk del .build-deps
 
-RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
+##RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
 
 
 RUN apk add --no-cache freetype-dev libpng-dev libjpeg-turbo-dev --virtual .gd-deps \
-    && apk add --no-cache  freetype libpng libjpeg-turbo \
+    && apk add --no-cache  freetype libpng libjpeg-turbo libzip-dev \
     && docker-php-ext-configure gd \
     --with-gd \
     --with-freetype-dir=/usr/include/ \
     --with-png-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd pdo_mysql \
+    && docker-php-ext-configure zip --with-libzip=/usr/include \
+    && docker-php-ext-install -j$(nproc) zip gd pdo_mysql \
     && apk del .gd-deps
 
 RUN chown -R www-data:www-data /app
