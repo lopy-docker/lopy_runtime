@@ -11,7 +11,7 @@ WORKDIR /app
 RUN apk add unrar
 
 # mysql 
-RUN docker-php-ext-install -j$(nproc) pdo_mysql
+#RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
 ADD extension /tmp/extension
 
@@ -40,7 +40,7 @@ RUN apk add --no-cache freetype-dev libpng-dev libjpeg-turbo-dev --virtual .gd-d
     --with-freetype-dir=/usr/include/ \
     --with-png-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql \
     && apk del .gd-deps
 
 RUN chown -R www-data:www-data /app
