@@ -7,3 +7,4 @@ services:
     image: "test_swoole"
     container_name: "test_swoole1"
     working_dir: /app
+    command: ['php','-m']

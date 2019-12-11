@@ -1,0 +1,54 @@
+# build image
+
+FROM php:7.2-cli-alpine3.9
+
+# Maintainer: docker_user <docker_user at email.com> (@docker_user)
+MAINTAINER zengyu 284141050@qq.com
+
+#
+WORKDIR /app
+
+
+ADD extension /tmp/extension
+
+# https://github.com/nodegit/nodegit/issues/1361
+# --virtual xxxx [eg: vir-package mean run "apk del vir-package" to del the packages this command when you want to delete package]
+# apcu swoole inotify
+# swoole depends on libzip or php-zip or zlib ???
+RUN apk add --update --no-cache --virtual .build-deps \
+    g++ \
+    gcc \
+    make \
+    autoconf \
+    ## swoole --with-openssl require
+    openssl-dev \
+    ## php-zip require
+    # libzip-dev \
+    ## php-gd require
+    freetype-dev libpng-dev libjpeg-turbo-dev \
+    ## install
+    ## && apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install -j$(nproc) zip \
+    # && pecl install inotify && docker-php-ext-enable inotify \
+    && pecl install redis && docker-php-ext-enable redis \
+    && php /tmp/extension/ExtInstaller.php -n apcu \
+    && php /tmp/extension/ExtInstaller.php -n swoole \
+    && rm -rf /tmp/extension \
+    ## install gd mysql
+    && apk add freetype libpng libjpeg-turbo \
+    && docker-php-ext-configure gd \
+    --with-gd \
+    --with-freetype-dir=/usr/include/ \
+    --with-png-dir=/usr/include/ \
+    --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql \
+    ## del packages
+    && apk del .build-deps
+
+
+RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install -j$(nproc) zip 
+RUN chown -R www-data:www-data /app
+
+
+
+# Commands when creating a new container
+CMD ["php","-i"]
